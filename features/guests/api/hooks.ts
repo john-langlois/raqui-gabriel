@@ -1,18 +1,13 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Guest, CreateRsvpInput, CreateFamilyRsvpInput } from "./schemas";
+import type { Guest, CreateRsvpInput } from "./schemas";
 
 const API_BASE = "/api";
 
-// Type for search results with family members
-export type GuestWithFamily = Guest & {
-  familyMembers?: Guest[];
-};
-
 // Search guests by name, email, or phone (partial text matching)
 export function useSearchGuests(query: string) {
-  return useQuery<GuestWithFamily[]>({
+  return useQuery<Guest[]>({
     queryKey: ["guests", "search", query],
     queryFn: async () => {
       if (!query || query.trim().length < 2) {
@@ -50,35 +45,6 @@ export function useCreateRsvp() {
 
       if (!response.ok || !result.success) {
         throw new Error(result.error || "Failed to submit RSVP");
-      }
-
-      return result.data;
-    },
-    onSuccess: () => {
-      // Invalidate guests queries to refetch
-      queryClient.invalidateQueries({ queryKey: ["guests"] });
-    },
-  });
-}
-
-// Create Family RSVP
-export function useCreateFamilyRsvp() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: CreateFamilyRsvpInput) => {
-      const response = await fetch(`${API_BASE}/guests/rsvp/family`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to submit family RSVP");
       }
 
       return result.data;

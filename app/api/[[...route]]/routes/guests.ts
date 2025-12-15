@@ -3,7 +3,6 @@ import { zValidator } from "@hono/zod-validator";
 import {
   searchGuestsSchema,
   createRsvpSchema,
-  createFamilyRsvpSchema,
   bulkCreateGuestsSchema,
   updateGuestStatusSchema,
   createGuestSchema,
@@ -13,7 +12,6 @@ import {
 import {
   searchGuests,
   createRsvp,
-  createFamilyRsvp,
   getAllGuests,
   bulkCreateGuests,
   updateGuestStatus,
@@ -49,29 +47,6 @@ const guests = new Hono()
       );
     }
   })
-  // Create Family RSVP
-  .post(
-    "/rsvp/family",
-    zValidator("json", createFamilyRsvpSchema),
-    async (c) => {
-      const data = c.req.valid("json");
-      try {
-        const result = await createFamilyRsvp(data.rsvps);
-        return c.json({ success: true, data: result }, 201);
-      } catch (error: any) {
-        return c.json(
-          {
-            success: false,
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to create family RSVP",
-          },
-          500
-        );
-      }
-    }
-  )
   // Create Single Guest (Admin)
   .post("/", zValidator("json", createGuestSchema), async (c) => {
     const data = c.req.valid("json");

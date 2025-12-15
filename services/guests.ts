@@ -1,32 +1,7 @@
 import { db } from "@/lib/db";
 import { guests } from "@/lib/db/schema";
-import { eq, ilike, or, inArray, and } from "drizzle-orm";
+import { eq, ilike, or, inArray } from "drizzle-orm";
 import type { NewGuest } from "@/lib/db/schema/guests";
-
-export async function getFamilyMembers(guestId: string) {
-  // First, get the guest to find their familyHeadId
-  const guest = await db
-    .select()
-    .from(guests)
-    .where(eq(guests.id, guestId))
-    .limit(1);
-
-  if (guest.length === 0) {
-    return [];
-  }
-
-  const familyHeadId = guest[0].familyHeadId || guest[0].id;
-
-  // Get all family members (including the head)
-  const familyMembers = await db
-    .select()
-    .from(guests)
-    .where(
-      or(eq(guests.id, familyHeadId), eq(guests.familyHeadId, familyHeadId))
-    );
-
-  return familyMembers;
-}
 
 export async function searchGuests(query: string) {
   if (!query || query.trim().length < 2) {
@@ -48,18 +23,7 @@ export async function searchGuests(query: string) {
     )
     .limit(10);
 
-  // For each result, get their family members
-  const resultsWithFamilies = await Promise.all(
-    results.map(async (guest) => {
-      const familyMembers = await getFamilyMembers(guest.id);
-      return {
-        ...guest,
-        familyMembers,
-      };
-    })
-  );
-
-  return resultsWithFamilies;
+  return results;
 }
 
 export async function createRsvp(data: {
@@ -105,35 +69,6 @@ export async function createRsvp(data: {
   return created;
 }
 
-export async function createFamilyRsvp(
-  rsvps: {
-    guestId: string;
-    email: string;
-    phone?: string;
-    status: "pending" | "attending" | "declined";
-  }[]
-) {
-  // Update all family members with their RSVP status
-  const updatedGuests = await Promise.all(
-    rsvps.map(async (rsvp) => {
-      const [updated] = await db
-        .update(guests)
-        .set({
-          email: rsvp.email,
-          phone: rsvp.phone || null,
-          status: rsvp.status,
-          updatedAt: new Date(),
-        })
-        .where(eq(guests.id, rsvp.guestId))
-        .returning();
-
-      return updated;
-    })
-  );
-
-  return updatedGuests;
-}
-
 export async function getAllGuests() {
   const results = await db.select().from(guests).orderBy(guests.createdAt);
 
@@ -147,7 +82,6 @@ export async function bulkCreateGuests(data: {
     phone?: string;
     type: "adult" | "child";
     isOnWaitlist: boolean;
-    familyHeadId?: string | null;
   }[];
 }) {
   const newGuests: NewGuest[] = data.guests.map((g) => ({
@@ -157,35 +91,11 @@ export async function bulkCreateGuests(data: {
     type: g.type,
     isOnWaitlist: g.isOnWaitlist,
     status: "pending",
-    familyHeadId: g.familyHeadId || null,
   }));
 
   const created = await db.insert(guests).values(newGuests).returning();
 
-  // If any guest was created as a family head (familyHeadId = their own id), update them
-  const updated = await Promise.all(
-    created.map(async (guest) => {
-      if (guest.familyHeadId === guest.id) {
-        return guest; // Already correct
-      }
-      // Check if this guest should be a family head (familyHeadId was set to their own id in the input)
-      const inputGuest = data.guests.find((g) => g.name === guest.name);
-      if (
-        inputGuest?.familyHeadId === "self" ||
-        inputGuest?.familyHeadId === guest.id
-      ) {
-        const [updatedGuest] = await db
-          .update(guests)
-          .set({ familyHeadId: guest.id, updatedAt: new Date() })
-          .where(eq(guests.id, guest.id))
-          .returning();
-        return updatedGuest;
-      }
-      return guest;
-    })
-  );
-
-  return updated;
+  return created;
 }
 
 import { sql } from "drizzle-orm"; // Need to import sql
@@ -210,28 +120,15 @@ export async function createGuest(data: {
   name: string;
   type: "adult" | "child";
   isOnWaitlist?: boolean;
-  familyHeadId?: string | null;
 }) {
   const newGuest: NewGuest = {
     name: data.name,
     type: data.type,
     isOnWaitlist: data.isOnWaitlist ?? false,
     status: "pending",
-    familyHeadId: data.familyHeadId || null,
   };
 
   const [created] = await db.insert(guests).values(newGuest).returning();
-
-  // If familyHeadId is "self" or should be set to own ID, update it
-  if (data.familyHeadId === "self" || data.familyHeadId === created.id) {
-    const [updated] = await db
-      .update(guests)
-      .set({ familyHeadId: created.id, updatedAt: new Date() })
-      .where(eq(guests.id, created.id))
-      .returning();
-    return updated;
-  }
-
   return created;
 }
 
@@ -249,7 +146,6 @@ export async function updateGuest(
     status?: "pending" | "attending" | "declined";
     type?: "adult" | "child";
     isOnWaitlist?: boolean;
-    familyHeadId?: string | null;
   }
 ) {
   const updateData: any = {
@@ -263,11 +159,6 @@ export async function updateGuest(
   if (data.type !== undefined) updateData.type = data.type;
   if (data.isOnWaitlist !== undefined)
     updateData.isOnWaitlist = data.isOnWaitlist;
-  if (data.familyHeadId !== undefined) {
-    // If familyHeadId is "self", set it to the guest's own ID
-    updateData.familyHeadId =
-      data.familyHeadId === "self" ? id : data.familyHeadId;
-  }
 
   const [updated] = await db
     .update(guests)

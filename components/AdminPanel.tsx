@@ -62,9 +62,6 @@ export function AdminPanel() {
   const [newGuestName, setNewGuestName] = useState("");
   const [newGuestType, setNewGuestType] = useState<"adult" | "child">("adult");
   const [newGuestWaitlist, setNewGuestWaitlist] = useState(false);
-  const [newGuestFamilyHeadId, setNewGuestFamilyHeadId] = useState<
-    string | null
-  >(null);
 
   // Edit Guest Modal State
   const [isEditGuestModalOpen, setIsEditGuestModalOpen] = useState(false);
@@ -76,7 +73,6 @@ export function AdminPanel() {
     status: "pending" as "pending" | "attending" | "declined",
     type: "adult" as "adult" | "child",
     isOnWaitlist: false,
-    familyHeadId: null as string | null,
   });
 
   const bulkCreateMutation = useBulkCreateGuests();
@@ -271,49 +267,18 @@ export function AdminPanel() {
   const handleBulkImport = async () => {
     if (!importData.trim()) return;
 
-    // Format: name|familyHeadName (familyHeadName is optional)
-    // If familyHeadName is provided, it must match an existing guest name
-    const lines = importData
+    // Simple format: one name per line
+    const names = importData
       .trim()
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
 
-    const parsedGuests = lines.map((line) => {
-      const [name, familyHeadName] = line.split("|").map((s) => s.trim());
-      const guestName = name || line;
-      let familyHeadId: string | null | undefined = undefined;
-
-      if (familyHeadName) {
-        // Find the family head by name in existing guests
-        const existingFamilyHead = guests.find(
-          (g) => g.name.toLowerCase() === familyHeadName.toLowerCase()
-        );
-        if (existingFamilyHead) {
-          // Use the family head's own ID if they are a head, otherwise use their familyHeadId
-          familyHeadId =
-            existingFamilyHead.familyHeadId === existingFamilyHead.id
-              ? existingFamilyHead.id
-              : existingFamilyHead.familyHeadId || existingFamilyHead.id;
-        } else {
-          // Family head not found - will create as ungrouped
-          console.warn(
-            `Family head "${familyHeadName}" not found for guest "${guestName}"`
-          );
-          familyHeadId = null;
-        }
-      } else {
-        // No family head specified - this guest becomes a family head
-        familyHeadId = "self";
-      }
-
-      return {
-        name: guestName,
-        type: importType,
-        isOnWaitlist: false,
-        familyHeadId: familyHeadId === undefined ? null : familyHeadId,
-      };
-    });
+    const parsedGuests = names.map((name) => ({
+      name,
+      type: importType,
+      isOnWaitlist: false,
+    }));
 
     try {
       await bulkCreateMutation.mutateAsync({ guests: parsedGuests });
@@ -353,17 +318,13 @@ export function AdminPanel() {
     if (!newGuestName.trim()) return;
 
     try {
-      const familyHeadId =
-        newGuestFamilyHeadId === "self" ? "self" : newGuestFamilyHeadId;
       await createGuestMutation.mutateAsync({
         name: newGuestName.trim(),
         type: newGuestType,
         isOnWaitlist: newGuestWaitlist,
-        familyHeadId: familyHeadId || undefined,
       });
       setNewGuestName("");
       setNewGuestWaitlist(false);
-      setNewGuestFamilyHeadId(null);
       setIsAddGuestModalOpen(false);
     } catch (err) {
       alert("Failed to add guest.");
@@ -389,7 +350,6 @@ export function AdminPanel() {
       status: guest.status || "pending",
       type: guest.type || "adult",
       isOnWaitlist: guest.isOnWaitlist || false,
-      familyHeadId: guest.familyHeadId || null,
     });
     setIsEditGuestModalOpen(true);
   };
@@ -398,10 +358,6 @@ export function AdminPanel() {
     if (!editingGuest || !editGuestForm.name.trim()) return;
 
     try {
-      const familyHeadId =
-        editGuestForm.familyHeadId === editingGuest.id
-          ? "self"
-          : editGuestForm.familyHeadId;
       await updateGuestMutation.mutateAsync({
         id: editingGuest.id,
         name: editGuestForm.name.trim(),
@@ -410,7 +366,6 @@ export function AdminPanel() {
         status: editGuestForm.status,
         type: editGuestForm.type,
         isOnWaitlist: editGuestForm.isOnWaitlist,
-        familyHeadId: familyHeadId || null,
       });
       setIsEditGuestModalOpen(false);
       setEditingGuest(null);
@@ -701,42 +656,6 @@ export function AdminPanel() {
                         Add to waitlist
                       </label>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Family Head
-                      </label>
-                      <select
-                        value={newGuestFamilyHeadId || ""}
-                        onChange={(e) =>
-                          setNewGuestFamilyHeadId(
-                            e.target.value === "" ? null : e.target.value
-                          )
-                        }
-                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b4545]"
-                      >
-                        <option value="">
-                          Create new family (this guest will be head)
-                        </option>
-                        {guests
-                          .filter(
-                            (g) =>
-                              !g.familyHeadId ||
-                              g.familyHeadId === g.id ||
-                              g.id === g.familyHeadId
-                          )
-                          .map((guest) => (
-                            <option key={guest.id} value={guest.id}>
-                              {guest.name}{" "}
-                              {guest.familyHeadId === guest.id ? "(Head)" : ""}
-                            </option>
-                          ))}
-                      </select>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Select an existing family head to add this guest to that
-                        family, or leave blank to create a new family.
-                      </p>
-                    </div>
                   </div>
 
                   <div className="flex justify-end gap-2 mt-6">
@@ -945,49 +864,6 @@ export function AdminPanel() {
                         On waitlist
                       </label>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Family Head
-                      </label>
-                      <select
-                        value={editGuestForm.familyHeadId || ""}
-                        onChange={(e) =>
-                          setEditGuestForm((prev) => ({
-                            ...prev,
-                            familyHeadId:
-                              e.target.value === ""
-                                ? null
-                                : e.target.value === "self"
-                                ? editingGuest?.id || null
-                                : e.target.value,
-                          }))
-                        }
-                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b4545]"
-                      >
-                        <option value="">No family (ungrouped)</option>
-                        <option value="self">
-                          This guest (make them family head)
-                        </option>
-                        {guests
-                          .filter(
-                            (g) =>
-                              g.id !== editingGuest?.id &&
-                              (!g.familyHeadId ||
-                                g.familyHeadId === g.id ||
-                                g.id === g.familyHeadId)
-                          )
-                          .map((guest) => (
-                            <option key={guest.id} value={guest.id}>
-                              {guest.name}{" "}
-                              {guest.familyHeadId === guest.id ? "(Head)" : ""}
-                            </option>
-                          ))}
-                      </select>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Select a family head to assign this guest to a family.
-                      </p>
-                    </div>
                   </div>
 
                   <div className="flex justify-end gap-2 mt-6">
@@ -1031,11 +907,7 @@ export function AdminPanel() {
                   </div>
                   <p className="text-sm text-gray-500 mb-4">
                     Paste your guest list below.{" "}
-                    <strong>One name per line.</strong> To assign to a family,
-                    use format:{" "}
-                    <code className="bg-gray-100 px-1 rounded">
-                      Name|FamilyHeadName
-                    </code>
+                    <strong>One name per line.</strong>
                   </p>
 
                   <div className="mb-4">
@@ -1072,7 +944,7 @@ export function AdminPanel() {
                     rows={10}
                     className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8b4545] font-mono text-sm mb-4"
                     placeholder={
-                      "John Doe\nJane Doe|John Doe\nMichael Smith\nEmily Johnson|Michael Smith"
+                      "John Doe\nJane Doe\nMichael Smith\nEmily Johnson"
                     }
                   />
 
@@ -1161,9 +1033,6 @@ export function AdminPanel() {
                         Type
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a2e2e] uppercase tracking-wider">
-                        Family Head
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a2e2e] uppercase tracking-wider">
                         Email
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a2e2e] uppercase tracking-wider">
@@ -1178,7 +1047,7 @@ export function AdminPanel() {
                     {filteredGuests.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={guestViewMode === "waitlist" ? 7 : 6}
+                          colSpan={guestViewMode === "waitlist" ? 6 : 5}
                           className="px-6 py-12 text-center text-gray-500"
                         >
                           {searchTerm
@@ -1217,20 +1086,6 @@ export function AdminPanel() {
                             >
                               {guest.type === "child" ? "Child" : "Adult"}
                             </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-600">
-                            {guest.familyHeadId ? (
-                              guest.familyHeadId === guest.id ? (
-                                <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#fff0f5] text-[#8b4545]">
-                                  Head
-                                </span>
-                              ) : (
-                                guests.find((g) => g.id === guest.familyHeadId)
-                                  ?.name || "Unknown"
-                              )
-                            ) : (
-                              <span className="text-gray-400">—</span>
-                            )}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
                             {guest.email}
