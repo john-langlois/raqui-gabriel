@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 type Story = {
   id: string;
   imageUrl: string;
-  description: string;
+  description: string | null;
   takenAt: string | Date;
 };
 
@@ -36,33 +36,33 @@ export function StoryGallery({ initialStories }: StoryGalleryProps) {
         </h1>
 
         {initialStories.length === 0 ? (
-            <div className="text-center text-gray-500 text-lg">
-                Stories appearing soon...
-            </div>
+          <div className="text-center text-gray-500 text-lg">
+            Stories appearing soon...
+          </div>
         ) : (
-            /* Grid */
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          /* Grid */
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {initialStories.map((story) => (
-                <div
+              <div
                 key={story.id}
                 className="break-inside-avoid relative group cursor-pointer"
                 onClick={() => setSelectedStory(story)}
-                >
+              >
                 <div className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-                    <img
+                  <img
                     src={story.imageUrl}
-                    alt={story.description}
+                    alt={story.description || "Story image"}
                     className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-700 hover:scale-105"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between">
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between">
                     <p className="text-white text-sm font-medium">
-                        {formatDate(story.takenAt)}
+                      {formatDate(story.takenAt)}
                     </p>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         )}
 
         {/* Modal */}
@@ -104,10 +104,12 @@ export function StoryGallery({ initialStories }: StoryGalleryProps) {
                       </h3>
                       <div className="w-16 h-1 bg-[#8b4545]" />
                     </div>
-                    
-                    <p className="text-gray-600 leading-relaxed text-lg font-light">
-                      {selectedStory.description}
-                    </p>
+
+                    {selectedStory.description && (
+                      <p className="text-gray-600 leading-relaxed text-lg font-light">
+                        {selectedStory.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

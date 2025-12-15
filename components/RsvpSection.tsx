@@ -29,7 +29,7 @@ export const RsvpSection = () => {
         name: selectedGuest.name,
         email: formData.email,
         phone: formData.phone || undefined,
-        attending: formData.attending,
+        status: formData.attending ? "attending" : "declined",
       });
     } catch (error) {
       console.error("Failed to submit RSVP:", error);

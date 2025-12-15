@@ -1,0 +1,14 @@
+{
+  "/api/admin/logout/route": "/api/admin/logout",
+  "/api/admin/verify/route": "/api/admin/verify",
+  "/api/upload/stories/route": "/api/upload/stories",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/api/[[...route]]/route": "/api/[[...route]]",
+  "/admin/page": "/admin",
+  "/gifts/page": "/gifts",
+  "/api/auth/signin/page": "/api/auth/signin",
+  "/page": "/",
+  "/rsvp/page": "/rsvp",
+  "/story/page": "/story"
+}

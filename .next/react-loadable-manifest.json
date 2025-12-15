@@ -1,14 +1,14 @@
 {
   "components/AdminPanel.tsx -> @/features/stories/api/stories": {
-    "id": "components/AdminPanel.tsx -> @/features/stories/api/stories",
+    "id": 5296,
     "files": [
-      "static/chunks/_app-pages-browser_features_stories_api_stories_ts.js"
+      "static/chunks/296.f74e3ad64b6097df.js"
     ]
   },
   "components/AdminPanel.tsx -> @vercel/blob/client": {
-    "id": "components/AdminPanel.tsx -> @vercel/blob/client",
+    "id": 6796,
     "files": [
-      "static/chunks/_app-pages-browser_node_modules_vercel_blob_dist_client_js.js"
+      "static/chunks/796.960c2af9fbf0bee9.js"
     ]
   }
 }

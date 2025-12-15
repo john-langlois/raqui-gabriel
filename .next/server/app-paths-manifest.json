@@ -1,6 +1,14 @@
 {
+  "/api/admin/logout/route": "app/api/admin/logout/route.js",
+  "/api/admin/verify/route": "app/api/admin/verify/route.js",
+  "/api/upload/stories/route": "app/api/upload/stories/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/[[...route]]/route": "app/api/[[...route]]/route.js",
   "/admin/page": "app/admin/page.js",
+  "/gifts/page": "app/gifts/page.js",
+  "/api/auth/signin/page": "app/api/auth/signin/page.js",
+  "/page": "app/page.js",
   "/rsvp/page": "app/rsvp/page.js",
-  "/page": "app/page.js"
+  "/story/page": "app/story/page.js"
 }
