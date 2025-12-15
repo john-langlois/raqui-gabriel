@@ -1,0 +1,14 @@
+{
+  "components/AdminPanel.tsx -> @/features/stories/api/stories": {
+    "id": "components/AdminPanel.tsx -> @/features/stories/api/stories",
+    "files": [
+      "static/chunks/_app-pages-browser_features_stories_api_stories_ts.js"
+    ]
+  },
+  "components/AdminPanel.tsx -> @vercel/blob/client": {
+    "id": "components/AdminPanel.tsx -> @vercel/blob/client",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_vercel_blob_dist_client_js.js"
+    ]
+  }
+}

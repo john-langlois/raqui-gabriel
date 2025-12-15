@@ -1,0 +1,58 @@
+{
+  "node": {
+    "001d04a57d0a95b5d14c7d3f543f44c2e2369918f5": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjohnlanglois%2FDocuments%2Fjohn-code%2Fraquel-gabriel%2Ffeatures%2Fstories%2Fapi%2Fstories.ts%22%2C%5B%7B%22id%22%3A%22001d04a57d0a95b5d14c7d3f543f44c2e2369918f5%22%2C%22exportedName%22%3A%22getStories%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%2260dd4bc9c9938b9b514d7451f3926fa8f1f6892fa2%22%2C%22exportedName%22%3A%22deleteStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22700a879bda9a80d130276f5c4d17d75e1ce87c9c9d%22%2C%22exportedName%22%3A%22createStoryRecord%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22702add974f8465f774df449fccd58cec92d0c9739e%22%2C%22exportedName%22%3A%22updateStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "filename": "features/stories/api/stories.ts",
+      "exportedName": "getStories"
+    },
+    "60dd4bc9c9938b9b514d7451f3926fa8f1f6892fa2": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjohnlanglois%2FDocuments%2Fjohn-code%2Fraquel-gabriel%2Ffeatures%2Fstories%2Fapi%2Fstories.ts%22%2C%5B%7B%22id%22%3A%22001d04a57d0a95b5d14c7d3f543f44c2e2369918f5%22%2C%22exportedName%22%3A%22getStories%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%2260dd4bc9c9938b9b514d7451f3926fa8f1f6892fa2%22%2C%22exportedName%22%3A%22deleteStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22700a879bda9a80d130276f5c4d17d75e1ce87c9c9d%22%2C%22exportedName%22%3A%22createStoryRecord%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22702add974f8465f774df449fccd58cec92d0c9739e%22%2C%22exportedName%22%3A%22updateStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "filename": "features/stories/api/stories.ts",
+      "exportedName": "deleteStory"
+    },
+    "700a879bda9a80d130276f5c4d17d75e1ce87c9c9d": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjohnlanglois%2FDocuments%2Fjohn-code%2Fraquel-gabriel%2Ffeatures%2Fstories%2Fapi%2Fstories.ts%22%2C%5B%7B%22id%22%3A%22001d04a57d0a95b5d14c7d3f543f44c2e2369918f5%22%2C%22exportedName%22%3A%22getStories%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%2260dd4bc9c9938b9b514d7451f3926fa8f1f6892fa2%22%2C%22exportedName%22%3A%22deleteStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22700a879bda9a80d130276f5c4d17d75e1ce87c9c9d%22%2C%22exportedName%22%3A%22createStoryRecord%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22702add974f8465f774df449fccd58cec92d0c9739e%22%2C%22exportedName%22%3A%22updateStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "filename": "features/stories/api/stories.ts",
+      "exportedName": "createStoryRecord"
+    },
+    "702add974f8465f774df449fccd58cec92d0c9739e": {
+      "workers": {
+        "app/admin/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjohnlanglois%2FDocuments%2Fjohn-code%2Fraquel-gabriel%2Ffeatures%2Fstories%2Fapi%2Fstories.ts%22%2C%5B%7B%22id%22%3A%22001d04a57d0a95b5d14c7d3f543f44c2e2369918f5%22%2C%22exportedName%22%3A%22getStories%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%2260dd4bc9c9938b9b514d7451f3926fa8f1f6892fa2%22%2C%22exportedName%22%3A%22deleteStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22700a879bda9a80d130276f5c4d17d75e1ce87c9c9d%22%2C%22exportedName%22%3A%22createStoryRecord%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%2C%7B%22id%22%3A%22702add974f8465f774df449fccd58cec92d0c9739e%22%2C%22exportedName%22%3A%22updateStory%22%2C%22filename%22%3A%22features%2Fstories%2Fapi%2Fstories.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/admin/page": "action-browser"
+      },
+      "filename": "features/stories/api/stories.ts",
+      "exportedName": "updateStory"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "XvW9mIcW/1H/v0J2xn4q6D8vyaegWsDi+JTjZu1WbT8="
+}
